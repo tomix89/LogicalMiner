@@ -1,0 +1,40 @@
+@keyframes bgAnim {
+    0%   {background-position: 0px   0px,   0px  0px;}
+    25%  {background-position: 0px 180px, 360px  0px;}
+    50%  {background-position: 0px 360px, 720px  0px;}
+    75%  {background-position: 0px 540px, 1080px 0px;}
+    100% {background-position: 0px 720px, 1440px 0px;}
+}
+
+.mainStyle {
+	background-color: black;
+	background-image: url(bg1.jpg), url(bg2.jpg);
+	background-repeat: repeat, repeat;
+	background-blend-mode: screen;
+	color: #EB8800;
+	font-family: Arial;
+	animation-name: bgAnim;
+	animation-duration: 120s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+.plainButton {
+	background: linear-gradient(to bottom, #995900 5%, #EB8800 100%);
+	border-radius: 6px;
+	border: 1px solid #EB8800;
+	cursor: pointer;
+	color: #000000;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 6px 24px;
+}
+
+.plainButton:hover {
+	background: linear-gradient(to top, #995900 5%, #EB8800 100%);
+}
+
+pre {
+	background-color: #202020B0;
+	display: inline-block;
+}
