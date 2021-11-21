@@ -9,7 +9,9 @@ function run() {
     resultField.textContent = "";
 
     var rawHash = sjcl.codec.hex.toBits(tx_hash_text_hex);
-    resultField.textContent += "Original tx_hash to start with: " + sjcl.codec.hex.fromBits(rawHash) + "\n";
+    resultField.textContent += "Original tx_hash to start with: " + "\n"
+                               + sjcl.codec.hex.fromBits(rawHash) + "\n";
+
     resultField.textContent += "\n";
 
     var tcktCntBn = BigInt(ticket_cnt);
