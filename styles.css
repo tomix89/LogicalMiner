@@ -39,6 +39,7 @@
 pre {
 	background-color: #202020B0;
 	display: inline-block;
+	font-size: 15px;
 }
 
 img.logo {
@@ -78,4 +79,13 @@ a:hover {
   color: red;
   background-color: transparent;
   text-decoration: underline;
+}
+
+table, th, td {
+  border: 1px solid #808080;
+  border-collapse: collapse;
+  background-color: #202020B0;
+  padding: 4px 24px;
+  margin-left: auto;
+  margin-right: auto;
 }
