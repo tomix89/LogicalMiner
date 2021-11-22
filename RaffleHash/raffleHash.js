@@ -26,7 +26,7 @@ function run() {
         var bigNm = BigInt("0x" + txt_hash)
         var winnerMod = bigNm % tcktCntBn
 
-        resultField.textContent += "[" + zeroPad(i+1,2) + "] SHA265: " + txt_hash + "\n";
+        resultField.textContent += "[" + zeroPad(i+1,2) + "] SHA256: " + txt_hash + "\n";
         resultField.textContent += "winner ID: " + winnerMod + "\n";
         resultField.textContent += "\n";
     }
