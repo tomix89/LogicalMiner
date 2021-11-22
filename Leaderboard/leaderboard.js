@@ -28,9 +28,11 @@ function run() {
 
                     // if miner is already in
                     if (miner in minerDict) {
-                        minerDict[miner] += mined;
+                        minerDict[miner].mined += mined;
+                        minerDict[miner].count++;
                     } else {
-                        minerDict[miner] = mined;
+                        let struct = {mined: mined, count: 1};
+                        minerDict[miner] = struct;
                     }
                 }
 
@@ -44,7 +46,7 @@ function run() {
 
                 // sort the array based on the second element
                 items.sort(function(first, second) {
-                    return second[1] - first[1];
+                    return second[1].mined - first[1].mined;
                 });
 
                 loadTableData(items);
@@ -61,9 +63,11 @@ function loadTableData(items) {
     const table = document.getElementById("testBody");
     items.forEach(item => {
         let row = table.insertRow();
-        let date = row.insertCell(0);
-        date.innerHTML = item[0];
-        let name = row.insertCell(1);
-        name.innerHTML = item[1].toFixed(4) + " TLM";
+        let cell0 = row.insertCell(0);
+        cell0.innerHTML = item[0];
+        let cell1 = row.insertCell(1);
+        cell1.innerHTML = item[1].mined.toFixed(4) + " TLM";
+        let cell2 = row.insertCell(2);
+        cell2.innerHTML = item[1].count;
     });
 }

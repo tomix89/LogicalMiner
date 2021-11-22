@@ -6,6 +6,8 @@
     100% {background-position: 0px 720px, 1440px 0px;}
 }
 
+@font-face { font-family: VampireWars; src: url('VampireWars.otf'); } 
+
 .mainStyle {
 	background-color: black;
 	background-image: url(bg1.jpg), url(bg2.jpg);
