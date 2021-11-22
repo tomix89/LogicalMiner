@@ -8,20 +8,29 @@
       <script src="leaderboard.js"></script>
    </head>
    <body class="mainStyle">
-      <h1 style='font-family:"VampireWars"'>Leaderboard</h1>
+      <h1 style='font-size: 55px; font-family:"VampireWars"'>Leaderboard</h1>
       <br>
       <a href="https://thelogicalminer.medium.com/mine-with-us-we-have-tools-to-win-351f26f722d3">Current event</a>
       <br>
-      <pre id="resultField"> </pre>
-      <table id="myTable" class="table">
-         <thead>
-            <tr>
-               <th>Miner</th>
-               <th>Sum. Mined</th>
-               <th>Mine count</th>
-            </tr>
-         </thead>
-         <tbody id="testBody"></tbody>
-      </table>
+      <div class="row" style="width: 1000px; margin: auto;">
+      <div class="column" style="float: left; width: 50%;">
+         <br>
+         <br>
+         <table id="myTable" class="table">
+            <thead>
+               <tr>
+                  <th>Miner</th>
+                  <th>Sum. Mined</th>
+                  <th>Mine count</th>
+               </tr>
+            </thead>
+            <tbody id="testBody"></tbody>
+         </table>
+      </div>
+      <div class="column">
+         <h3 style='font-size: 35px; font-family:"VampireWars"'>
+         Recodr holders</h1>
+         <pre align="left" id="resultField"> </pre>
+      </div>
    </body>
 </html>

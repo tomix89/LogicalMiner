@@ -20,6 +20,12 @@ function run() {
 
             let minerDict = {};
 
+            let maxSingleMine = {
+                miner: "",
+                time: new Date('01 Jan 1970 00:00:00 GMT'),
+                amount: 0.0
+            };
+
             if (json && json.results && json.results.length > 0) {
                 for (let i = 0; i < json.results.length; i++) {
                     let mined = json.results[i].bounty / 10000;
@@ -34,6 +40,13 @@ function run() {
                         let struct = {mined: mined, count: 1};
                         minerDict[miner] = struct;
                     }
+
+                    if (maxSingleMine.amount < mined) {
+                        maxSingleMine.amount = mined;
+                        maxSingleMine.time = new Date(time);
+                        maxSingleMine.miner = miner;
+                    }
+
                 }
 
                 console.log("Total items returned: " + json.results.length);
@@ -44,13 +57,28 @@ function run() {
                     return [key, minerDict[key]];
                 });
 
-                // sort the array based on the second element
+                // sort the array based on the mined sum
                 items.sort(function(first, second) {
                     return second[1].mined - first[1].mined;
                 });
 
                 loadTableData(items);
-                resultField.textContent = "";
+                resultField.textContent = "Max amount by single mine:" + "\n" +
+                    maxSingleMine.miner + "\n" +
+                    maxSingleMine.amount.toFixed(4) + " TLM" + "\n" +
+                    maxSingleMine.time.toISOString().replace('T', ' ').replace('Z', '') + " UTC" + "\n" +
+                    "\n\n" +
+                    "Max mine count:" + "\n";
+
+                // sort the array based on the mine count
+                items.sort(function(first, second) {
+                    return second[1].count - first[1].count;
+                });
+
+                resultField.textContent += items[0][0] + "\n" +
+                    items[0][1].count;
+
+
             } else {
                 resultField.textContent = "Alien Wolds API is busy (or error happened).\nTry a few seconds later (reload - F5). API responded: " + json;
             }
