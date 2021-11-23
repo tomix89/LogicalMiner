@@ -4,103 +4,90 @@ window.onload = function() {
     run();
 };
 
-function run() {
+async function run() {
     let resultField = document.getElementById("resultField");
     resultField.textContent = "Loading...";
 
-    let querry = 'https://api.alienworlds.io/v1/alienworlds/mines?landowner=auurg.wam' +
-        '&from=2021-11-21T06:00:00' +
-        '&to=2021-12-05T19:00:00' +
-        '&sort=desc' +
-        '&limit=5000';
+    let from = new Date("2021-11-21T06:00:00Z");
+    let to = new Date("2021-12-05T19:00:00Z")
+    let results = await downloadData(from, to);
+    let usedResultsCnt = 0;
 
-    fetch(querry)
-        .then(response => response.json())
-        .then(json => {
+    // test for null
+    if (results) {
+        let minerDict = {};
+        let maxSingleMine = {
+            miner: "",
+            time: new Date('01 Jan 1970 00:00:00 GMT'),
+            amount: 0.0
+        };
 
-            let minerDict = {};
+        for (let i = 0; i < results.length; i++) {
+            let mined = results[i].bounty / 10000;
+            let time = results[i].block_timestamp;
+            let miner = results[i].miner;
 
-            let maxSingleMine = {
-                miner: "",
-                time: new Date('01 Jan 1970 00:00:00 GMT'),
-                amount: 0.0
-            };
-
-            if (json && json.results && json.results.length > 0) {
-				
-				if (json.results.length >= 4999) {
-					resultField.textContent = "API is sending incomplete data"
-					return;					
-				}
-				
-                for (let i = 0; i < json.results.length; i++) {
-                    let mined = json.results[i].bounty / 10000;
-                    let time = json.results[i].block_timestamp;
-                    let miner = json.results[i].miner;
-
-                    // if miner is already in
-                    if (miner in minerDict) {
-                        minerDict[miner].mined += mined;
-                        minerDict[miner].count++;
-                    } else {
-                        let struct = {mined: mined, count: 1};
-                        minerDict[miner] = struct;
-                    }
-
-                    if (maxSingleMine.amount < mined) {
-                        maxSingleMine.amount = mined;
-                        maxSingleMine.time = new Date(time);
-                        maxSingleMine.miner = miner;
-                    }
-
-                }
-
-                console.log("Total items returned: " + json.results.length);
-                console.log("Unique miners: " + Object.keys(minerDict).length);
-
-                // create array from dict
-                var items = Object.keys(minerDict).map(function(key) {
-                    return [key, minerDict[key]];
-                });
-
-                // sort the array based on the mined sum
-                items.sort(function(first, second) {
-                    return second[1].mined - first[1].mined;
-                });
-
-                loadTableData(items);
-                resultField.textContent = "Max amount by single mine:" + "\n" +
-                    maxSingleMine.miner + "\n" +
-                    maxSingleMine.amount.toFixed(4) + " TLM" + "\n" +
-                    maxSingleMine.time.toISOString().replace('T', ' ').replace('Z', '') + " UTC" + "\n" +
-                    "\n\n" +
-					"Max sum. mined:" + "\n";
-					resultField.textContent += items[0][0] + "\n" +
-                    items[0][1].mined.toFixed(4) + " TLM" + "\n" +
-					"\n\n" +
-                    "Max mine count:" + "\n";
-                // sort the array based on the mine count
-                items.sort(function(first, second) {
-                    return second[1].count - first[1].count;
-                });
-                resultField.textContent += items[0][0] + "\n" +
-                    items[0][1].count + 
-				 "\n\n" +
-				 "--------------------------------------" + 
-				 "\n\n" +
-				 "Total number of miners:" + "\n" +
-				 items.length + 
-				 "\n\n" +
-				 "Total number of mine attempts:" + "\n" +
-				 json.results.length;
-
-
-            } else {
-                resultField.textContent = "Alien Wolds API is busy (or error happened).\nTry a few seconds later (reload - F5). API responded: " + json;
+            if (new Date(time) < from) {
+                usedResultsCnt = i + 1;
+                break;
             }
-        }).catch(error => {
-            resultField.textContent = "ERROR: " + error;
+
+            // if miner is already in
+            if (miner in minerDict) {
+                minerDict[miner].mined += mined;
+                minerDict[miner].count++;
+            } else {
+                let struct = {mined: mined, count: 1};
+                minerDict[miner] = struct;
+            }
+
+            if (maxSingleMine.amount < mined) {
+                maxSingleMine.amount = mined;
+                maxSingleMine.time = new Date(time);
+                maxSingleMine.miner = miner;
+            }
+        }
+
+        console.log("Total items returned: " + results.length + " from that used: " + usedResultsCnt);
+        console.log("Unique miners: " + Object.keys(minerDict).length);
+
+        // create array from dict
+        var items = Object.keys(minerDict).map(function(key) {
+            return [key, minerDict[key]];
         });
+
+        // sort the array based on the mined sum
+        items.sort(function(first, second) {
+            return second[1].mined - first[1].mined;
+        });
+
+        loadTableData(items);
+        resultField.textContent = "Max amount by single mine:" + "\n" +
+            maxSingleMine.miner + "\n" +
+            maxSingleMine.amount.toFixed(4) + " TLM" + "\n" +
+            maxSingleMine.time.toISOString().replace('T', ' ').replace('Z', '') + " UTC" + "\n" +
+            "\n\n" +
+            "Max sum. mined:" + "\n";
+        resultField.textContent += items[0][0] + "\n" +
+            items[0][1].mined.toFixed(4) + " TLM" + "\n" +
+            "\n\n" +
+            "Max mine count:" + "\n";
+        // sort the array based on the mine count
+        items.sort(function(first, second) {
+            return second[1].count - first[1].count;
+        });
+        resultField.textContent += items[0][0] + "\n" +
+            items[0][1].count +
+            "\n\n" +
+            "--------------------------------------" +
+            "\n\n" +
+            "Total number of miners:" + "\n" +
+            items.length +
+            "\n\n" +
+            "Total number of mine attempts:" + "\n" +
+            usedResultsCnt;
+    }
+
 }
 
 function loadTableData(items) {
@@ -114,4 +101,56 @@ function loadTableData(items) {
         let cell2 = row.insertCell(2);
         cell2.innerHTML = item[1].count;
     });
+}
+
+
+// from is past, to is future
+// we are polling newest to oldest
+async function downloadData(from, to) {
+
+    let doPollMore = true;
+    let lastPolledGlobSeq = Number.MAX_VALUE;
+    let retVal = []; // here comes the json.results
+
+    while (doPollMore) {
+
+        // theoretically we3 are wasting resources to not to define the 'from' parameter for the request
+        // because then the full sized poll will be returned (limit)
+        // BUT AW has a bug, when the 'from' and 'to' is really near, and there are no action inside that interval
+        // the API fails to return anything instead of returning an empty array in the response
+        let querry = 'https://api.alienworlds.io/v1/alienworlds/mines?landowner=auurg.wam' +
+            '&sort=desc' +
+            '&limit=2000';
+
+        if (lastPolledGlobSeq == Number.MAX_VALUE) {
+            // we don't know where we are - use date
+            querry += '&to=' + to.toISOString();
+        } else {
+            // we are polling repeatedly - use global sequence to not to have dupes
+            querry += '&global_sequence_to=' + lastPolledGlobSeq;
+        }
+        console.log(querry);
+
+        await fetch(querry)
+            .then(response => response.json())
+            .then(json => {
+                if (json && json.results && json.results.length > 0) {
+
+                    retVal = retVal.concat(json.results);
+                    lastPolledGlobSeq = json.results[json.results.length - 1].global_sequence;
+
+                    if (new Date(json.results[json.results.length - 1].block_timestamp) < from) {
+                        doPollMore = false;
+                    }
+                } else {
+                    resultField.textContent = "Alien Wolds API returned wrong answer.\nTry a few seconds later (reload - F5)";
+                    return null;
+                }
+            }).catch(error => {
+                resultField.textContent = "ERROR: " + error;
+                return null
+            });
+    }
+
+    return retVal;
 }
