@@ -27,6 +27,12 @@ function run() {
             };
 
             if (json && json.results && json.results.length > 0) {
+				
+				if (json.results.length >= 4999) {
+					resultField.textContent = "API is sending incomplete data"
+					return;					
+				}
+				
                 for (let i = 0; i < json.results.length; i++) {
                     let mined = json.results[i].bounty / 10000;
                     let time = json.results[i].block_timestamp;
@@ -68,15 +74,25 @@ function run() {
                     maxSingleMine.amount.toFixed(4) + " TLM" + "\n" +
                     maxSingleMine.time.toISOString().replace('T', ' ').replace('Z', '') + " UTC" + "\n" +
                     "\n\n" +
+					"Max sum. mined:" + "\n";
+					resultField.textContent += items[0][0] + "\n" +
+                    items[0][1].mined.toFixed(4) + " TLM" + "\n" +
+					"\n\n" +
                     "Max mine count:" + "\n";
-
                 // sort the array based on the mine count
                 items.sort(function(first, second) {
                     return second[1].count - first[1].count;
                 });
-
                 resultField.textContent += items[0][0] + "\n" +
-                    items[0][1].count;
+                    items[0][1].count + 
+				 "\n\n" +
+				 "--------------------------------------" + 
+				 "\n\n" +
+				 "Total number of miners:" + "\n" +
+				 items.length + 
+				 "\n\n" +
+				 "Total number of mine attempts:" + "\n" +
+				 json.results.length;
 
 
             } else {
