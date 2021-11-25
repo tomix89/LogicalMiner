@@ -8,10 +8,16 @@ async function run() {
     let resultField = document.getElementById("resultField");
     resultField.textContent = "Loading...";
 
-    let from = new Date("2021-11-21T06:00:00Z");
-    let to = new Date("2021-12-05T19:00:00Z")
+    const from = new Date("2021-11-21T06:00:00Z");
+    const to = new Date("2021-12-05T19:00:00Z")
     let results = await downloadData(from, to);
     let usedResultsCnt = 0;
+
+    const curr_event_lbl = document.getElementById("curr_event");
+    curr_event_lbl.innerHTML = "Current Event:\n" +
+                               from.toISOString().replace('T', ' ').substring(0, 19)  + " UTC" +
+                               "  -  " +
+                               to.toISOString().replace('T', ' ').substring(0, 19) + " UTC";
 
     // test for null
     if (results) {
