@@ -29,6 +29,11 @@ async function run() {
             let miner = data[i].sender_name;
             let cnt = data[i].assets.length
 
+            // do not show the test transaction
+            if (miner === 'logicalmnfts') {
+                continue;
+            }
+
             for (let asset = 0; asset < cnt; asset++) {
                 items.push({uid: uid, miner: miner, time: time });
                 uid++;
