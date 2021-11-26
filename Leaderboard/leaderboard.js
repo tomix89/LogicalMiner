@@ -14,7 +14,7 @@ async function run() {
     let usedResultsCnt = 0;
 
     const curr_event_lbl = document.getElementById("curr_event");
-    curr_event_lbl.innerHTML = "Current Event:\n" +
+    curr_event_lbl.innerHTML = "Mines are counted in:\n" +
                                from.toISOString().replace('T', ' ').substring(0, 19)  + " UTC" +
                                "  -  " +
                                to.toISOString().replace('T', ' ').substring(0, 19) + " UTC";
