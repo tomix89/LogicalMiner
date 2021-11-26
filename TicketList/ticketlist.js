@@ -40,7 +40,6 @@ async function run() {
             } else {
                 minerDict[miner] = cnt;
             }
-
         }
 
         console.log("Total items returned: " + data.length + " from that NFT count: " + uid);
@@ -74,6 +73,7 @@ async function downloadData(from, to) {
     let doPollMore = true;
     let page = 1;
     let retVal = []; // here comes the json.results
+    const pollSize = 100;
 
     while (doPollMore) {
 
@@ -87,7 +87,7 @@ async function downloadData(from, to) {
             '&before=' + to.getTime() +
             '&after=' + from.getTime() +
             '&page=' + page +
-            '&limit=100' +
+            '&limit=' + pollSize +
             '&order=asc&sort=created'; // sorted by time - oldest first - mowing page from past
 
         console.log(querry);
@@ -100,7 +100,7 @@ async function downloadData(from, to) {
                     retVal = retVal.concat(json.data);
 
                     // if we have a full poll, then there are more data
-                    doPollMore = json.data.length == 100;
+                    doPollMore = json.data.length == pollSize;
                     page++;
 
                 } else {
