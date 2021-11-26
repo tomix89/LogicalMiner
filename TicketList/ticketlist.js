@@ -21,7 +21,8 @@ async function run() {
 
     // test for null
     if (data) {
-        items = []; // array to store the uids in
+        let items = []; // array to store the uids in
+        let minerDict = {}; // to track unique miners
 
         for (let i = 0; i < data.length; i++) {
             let time = Number(data[i].created_at_time);
@@ -32,11 +33,24 @@ async function run() {
                 items.push({uid: uid, miner: miner, time: time });
                 uid++;
             }
-        }
-    }
 
-    console.log("Total items returned: " + data.length + " from that NFT count: " + (uid + 1));
-    loadTableData(items);
+            // if miner is already in
+            if (miner in minerDict) {
+                minerDict[miner] += cnt;
+            } else {
+                minerDict[miner] = cnt;
+            }
+
+        }
+
+        console.log("Total items returned: " + data.length + " from that NFT count: " + uid);
+        loadTableData(items);
+
+        resultField.textContent = "Total tickets: " + uid + "\n" +
+            "Total unique senders: " + Object.keys(minerDict).length +
+            "                "; // dummy space to have at least some width
+
+    }
 }
 
 function loadTableData(items) {
