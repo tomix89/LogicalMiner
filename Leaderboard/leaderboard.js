@@ -40,10 +40,13 @@ async function run() {
 
             // if miner is already in
             if (miner in minerDict) {
+                if (minerDict[miner].time < time) {
+                    minerDict[miner].time = time
+                }
                 minerDict[miner].mined += mined;
                 minerDict[miner].count++;
             } else {
-                let struct = {mined: mined, count: 1};
+                let struct = {mined: mined, time: time, count: 1};
                 minerDict[miner] = struct;
             }
 
@@ -106,6 +109,8 @@ function loadTableData(items) {
         cell1.innerHTML = item[1].mined.toFixed(4) + " TLM";
         let cell2 = row.insertCell(2);
         cell2.innerHTML = item[1].count;
+        let cell3 = row.insertCell(3);
+        cell3.innerHTML = timeSince(item[1].time);
     });
 }
 
@@ -126,7 +131,7 @@ async function downloadData(from, to) {
         // the API fails to return anything instead of returning an empty array in the response
         let querry = 'https://api.alienworlds.io/v1/alienworlds/mines?landowner=auurg.wam' +
             '&sort=desc' +
-            '&limit=2000';
+            '&limit=3333';
 
         if (lastPolledGlobSeq == Number.MAX_VALUE) {
             // we don't know where we are - use date
@@ -160,3 +165,44 @@ async function downloadData(from, to) {
 
     return retVal;
 }
+// based on
+// https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site/23259289#23259289
+var timeSince = function(date) {
+    if (typeof date !== 'object') {
+        date = new Date(date);
+    }
+
+    var seconds = Math.floor((new Date() - date) / 1000);
+    var intervalType;
+
+    var interval = Math.floor(seconds / 604800);
+    if (interval >= 1) {
+        intervalType = 'week';
+    } else {
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) {
+            intervalType = 'day';
+        } else {
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                intervalType = "hour";
+            } else {
+                interval = Math.floor(seconds / 60);
+                if (interval >= 1) {
+                    intervalType = "minute";
+                } else {
+                    interval = seconds;
+                    intervalType = "second";
+                }
+            }
+        }
+    }
+
+    if (interval > 1 || interval === 0) {
+        intervalType += 's';
+    } else {
+        intervalType = ((intervalType === 'hour') ? 'an ' : 'a ') + intervalType;
+    }
+
+    return intervalType + ' ago';
+};
