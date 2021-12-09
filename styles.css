@@ -91,3 +91,24 @@ table, th, td {
   margin-left: auto;
   margin-right: auto;
 }
+
+.nav {
+  margin: 0;
+  padding: 0;
+ }
+
+.nav ul {
+ margin: 0;
+ padding: 0;
+}
+
+.nav li {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.nav a {
+  margin: 0;
+  padding: 1em;
+}
