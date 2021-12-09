@@ -92,6 +92,10 @@ table, th, td {
   margin-right: auto;
 }
 
+table {
+  margin-bottom: 10em;
+}
+
 .nav {
   margin: 0;
   padding: 0;
