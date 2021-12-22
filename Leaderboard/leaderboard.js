@@ -8,8 +8,8 @@ async function run() {
     let resultField = document.getElementById("resultField");
     resultField.textContent = "Loading...";
 
-    const from = new Date("2021-12-05T19:10:00Z")
-    const to = new Date("2021-12-19T19:00:00Z")
+    const from = new Date("2021-12-19T19:02:00Z")
+    const to = new Date("2022-01-03T19:00:00Z")
     let results = await downloadData(from, to);
     let usedResultsCnt = 0;
 
